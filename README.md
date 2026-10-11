@@ -33,7 +33,7 @@
 | `project.yml` | XcodeGen 工程配置来源 |
 | `AppleCopilot.xcodeproj/` | 可直接打开的 Xcode 工程与共享 schemes |
 
-构建缓存、运行日志、个人 Xcode 状态及签名文件不进入版本库。本地安装的第三方技能副本也不提交；`skills-lock.json` 保留其来源与版本信息，应用构建不依赖这些技能。
+构建缓存、运行日志、个人 Xcode 状态及签名文件不进入版本库。项目内的 `.agents/`、`.claude/` 以及其他项目配置文件随仓库提交；`.agents/skills/` 保存已安装的技能，`.claude/skills/` 保留指向这些技能的相对符号链接，`skills-lock.json` 记录来源与版本信息。应用构建不依赖这些技能。
 
 ### 签名与共享权限
 

@@ -24,7 +24,3 @@ __pycache__/
 *.key
 *.log
 *.jsonl
-
-# Installed third-party agent skills; sources are recorded in skills-lock.json
-.agents/skills/
-.claude/skills/
