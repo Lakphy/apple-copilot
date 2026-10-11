@@ -1,0 +1,650 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		249F3801F43E0D987A86D54B /* AppleCopilotApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F1578800B479AE4A4D07C5 /* AppleCopilotApp.swift */; };
+		2F5BECAEB953F572466C7FD9 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 1D2FA8644D4FFB730C10C9B2 /* AppIcon.icon */; };
+		387504CEAEB270FFA4C63668 /* CopilotUI in Frameworks */ = {isa = PBXBuildFile; productRef = 390373C0D19DA3275FB9FDA9 /* CopilotUI */; };
+		45EA911CBB26FA68AD7C842D /* CopilotCore in Frameworks */ = {isa = PBXBuildFile; productRef = A2027A91A08E4C99E36958BE /* CopilotCore */; };
+		5151506FC34E0177F6C5AE5B /* AppleCopilotApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F1578800B479AE4A4D07C5 /* AppleCopilotApp.swift */; };
+		6C45506323A1A08644019E08 /* CopilotUI in Frameworks */ = {isa = PBXBuildFile; productRef = 43253435A07A124D4F85A1D7 /* CopilotUI */; };
+		6D68B6A19434FB9956484F03 /* AppleCopilotTranslationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA25DB228436C7963B117443 /* AppleCopilotTranslationExtension.swift */; };
+		838CB705187463DB26C79C07 /* MacIntegration in Frameworks */ = {isa = PBXBuildFile; productRef = F80383DDD481ED501C61A30A /* MacIntegration */; };
+		BDCA66F2F354B84F1118E9F7 /* CopilotUI in Frameworks */ = {isa = PBXBuildFile; productRef = E59BE82EBD572539F59AA331 /* CopilotUI */; };
+		C777F26D31875DF73F7CF2D4 /* CopilotCore in Frameworks */ = {isa = PBXBuildFile; productRef = B98CB6ED3BFEF092BD11FDFD /* CopilotCore */; };
+		E142DA48ED5DF5FF0D5E64F9 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 1D2FA8644D4FFB730C10C9B2 /* AppIcon.icon */; };
+		EC6190F754E5ACCBB31C6026 /* AppleCopilotTranslation.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = 129337EB4EBDF8B444F5FAE0 /* AppleCopilotTranslation.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		FFC5C34D2629C0225C73CF5E /* CopilotCore in Frameworks */ = {isa = PBXBuildFile; productRef = C874BA25CB14B18BDE9D85F1 /* CopilotCore */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		41D141A8797563CFC4ED2F18 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 09817F7535F42FA3E3A0EA42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6065B46D3371DC932B664DC1;
+			remoteInfo = AppleCopilotTranslation;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B06F18A9566C689898ED9409 /* Embed ExtensionKit Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(EXTENSIONS_FOLDER_PATH)";
+			dstSubfolderSpec = 16;
+			files = (
+				EC6190F754E5ACCBB31C6026 /* AppleCopilotTranslation.appex in Embed ExtensionKit Extensions */,
+			);
+			name = "Embed ExtensionKit Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		129337EB4EBDF8B444F5FAE0 /* AppleCopilotTranslation.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = AppleCopilotTranslation.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		18FCEDCA242F2E41A5CD6EAA /* AppleCopilot-macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AppleCopilot-macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C79CAAB9354BC812C20FF83 /* apple-copilot */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "apple-copilot"; path = .; sourceTree = SOURCE_ROOT; };
+		1D2FA8644D4FFB730C10C9B2 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		309451E42EA6A4A0952AE105 /* AppleCopilot-iOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "AppleCopilot-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		36F1578800B479AE4A4D07C5 /* AppleCopilotApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleCopilotApp.swift; sourceTree = "<group>"; };
+		EA25DB228436C7963B117443 /* AppleCopilotTranslationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleCopilotTranslationExtension.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		442488799AD105CA81083EC4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FFC5C34D2629C0225C73CF5E /* CopilotCore in Frameworks */,
+				BDCA66F2F354B84F1118E9F7 /* CopilotUI in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4F4E4CE44DBEA7E2AA1CBF26 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C777F26D31875DF73F7CF2D4 /* CopilotCore in Frameworks */,
+				387504CEAEB270FFA4C63668 /* CopilotUI in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E9296C27BC8FEF4689C88ECF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				45EA911CBB26FA68AD7C842D /* CopilotCore in Frameworks */,
+				6C45506323A1A08644019E08 /* CopilotUI in Frameworks */,
+				838CB705187463DB26C79C07 /* MacIntegration in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1F8518D0316E5BCAF5D0FA3E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				309451E42EA6A4A0952AE105 /* AppleCopilot-iOS.app */,
+				18FCEDCA242F2E41A5CD6EAA /* AppleCopilot-macOS.app */,
+				129337EB4EBDF8B444F5FAE0 /* AppleCopilotTranslation.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		65B51A32867E25BABEDE8255 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				1C79CAAB9354BC812C20FF83 /* apple-copilot */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		99676D688D79F40463B70274 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				FB716D4A1B78F335CFD1E98E /* AppleCopilotApp */,
+				F7430C5DA9A888F5F2634F84 /* TranslationExtension */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		997E4A82CD4C20413574B5B4 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1D2FA8644D4FFB730C10C9B2 /* AppIcon.icon */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		A3C5D590F9E0F0BA0CD0D805 = {
+			isa = PBXGroup;
+			children = (
+				65B51A32867E25BABEDE8255 /* Packages */,
+				997E4A82CD4C20413574B5B4 /* Resources */,
+				99676D688D79F40463B70274 /* Sources */,
+				1F8518D0316E5BCAF5D0FA3E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F7430C5DA9A888F5F2634F84 /* TranslationExtension */ = {
+			isa = PBXGroup;
+			children = (
+				EA25DB228436C7963B117443 /* AppleCopilotTranslationExtension.swift */,
+			);
+			path = TranslationExtension;
+			sourceTree = "<group>";
+		};
+		FB716D4A1B78F335CFD1E98E /* AppleCopilotApp */ = {
+			isa = PBXGroup;
+			children = (
+				36F1578800B479AE4A4D07C5 /* AppleCopilotApp.swift */,
+			);
+			path = AppleCopilotApp;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5FB7849C671F2E4F23043CF8 /* AppleCopilot-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EFD6676A912394E088B987F5 /* Build configuration list for PBXNativeTarget "AppleCopilot-iOS" */;
+			buildPhases = (
+				2C3DC7E767517AAE102A0735 /* Sources */,
+				B0260EF8B0BAE5A470C65727 /* Resources */,
+				442488799AD105CA81083EC4 /* Frameworks */,
+				B06F18A9566C689898ED9409 /* Embed ExtensionKit Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				477C860E391DA97A68A02400 /* PBXTargetDependency */,
+			);
+			name = "AppleCopilot-iOS";
+			packageProductDependencies = (
+				C874BA25CB14B18BDE9D85F1 /* CopilotCore */,
+				E59BE82EBD572539F59AA331 /* CopilotUI */,
+			);
+			productName = "AppleCopilot-iOS";
+			productReference = 309451E42EA6A4A0952AE105 /* AppleCopilot-iOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		6065B46D3371DC932B664DC1 /* AppleCopilotTranslation */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 752A35A9887A8392B527E515 /* Build configuration list for PBXNativeTarget "AppleCopilotTranslation" */;
+			buildPhases = (
+				0160414B3303A49DF0635B3F /* Sources */,
+				4F4E4CE44DBEA7E2AA1CBF26 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AppleCopilotTranslation;
+			packageProductDependencies = (
+				B98CB6ED3BFEF092BD11FDFD /* CopilotCore */,
+				390373C0D19DA3275FB9FDA9 /* CopilotUI */,
+			);
+			productName = AppleCopilotTranslation;
+			productReference = 129337EB4EBDF8B444F5FAE0 /* AppleCopilotTranslation.appex */;
+			productType = "com.apple.product-type.extensionkit-extension";
+		};
+		7B01B277109C2298E5E20889 /* AppleCopilot-macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E99BB7D33A44252B654F4603 /* Build configuration list for PBXNativeTarget "AppleCopilot-macOS" */;
+			buildPhases = (
+				286866F8E7B08F62ACB8023C /* Sources */,
+				BEF44AC3CB37007F4769233C /* Resources */,
+				E9296C27BC8FEF4689C88ECF /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "AppleCopilot-macOS";
+			packageProductDependencies = (
+				A2027A91A08E4C99E36958BE /* CopilotCore */,
+				43253435A07A124D4F85A1D7 /* CopilotUI */,
+				F80383DDD481ED501C61A30A /* MacIntegration */,
+			);
+			productName = "AppleCopilot-macOS";
+			productReference = 18FCEDCA242F2E41A5CD6EAA /* AppleCopilot-macOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		09817F7535F42FA3E3A0EA42 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 2700;
+				TargetAttributes = {
+					5FB7849C671F2E4F23043CF8 = {
+						DevelopmentTeam = Z262GH82B2;
+						ProvisioningStyle = Automatic;
+					};
+					6065B46D3371DC932B664DC1 = {
+						DevelopmentTeam = Z262GH82B2;
+						ProvisioningStyle = Automatic;
+					};
+					7B01B277109C2298E5E20889 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = F724B86F3CBBC9C946ECDB70 /* Build configuration list for PBXProject "AppleCopilot" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = A3C5D590F9E0F0BA0CD0D805;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				80979F2B319FD119933ABFA1 /* XCLocalSwiftPackageReference "." */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 1F8518D0316E5BCAF5D0FA3E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5FB7849C671F2E4F23043CF8 /* AppleCopilot-iOS */,
+				7B01B277109C2298E5E20889 /* AppleCopilot-macOS */,
+				6065B46D3371DC932B664DC1 /* AppleCopilotTranslation */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B0260EF8B0BAE5A470C65727 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E142DA48ED5DF5FF0D5E64F9 /* AppIcon.icon in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BEF44AC3CB37007F4769233C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2F5BECAEB953F572466C7FD9 /* AppIcon.icon in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0160414B3303A49DF0635B3F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D68B6A19434FB9956484F03 /* AppleCopilotTranslationExtension.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		286866F8E7B08F62ACB8023C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				249F3801F43E0D987A86D54B /* AppleCopilotApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2C3DC7E767517AAE102A0735 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5151506FC34E0177F6C5AE5B /* AppleCopilotApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		477C860E391DA97A68A02400 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6065B46D3371DC932B664DC1 /* AppleCopilotTranslation */;
+			targetProxy = 41D141A8797563CFC4ED2F18 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		229EC944A80B919118A324EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APP_GROUP_IDENTIFIER = group.com.lakphy.applecopilot;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				KEYCHAIN_SHARED_SUFFIX = com.lakphy.applecopilot.shared;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		338C36B62DB4988F591BC8C0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Configuration/iOS.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = Z262GH82B2;
+				INFOPLIST_FILE = Configuration/iOS.Info.plist;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.lakphy.applecopilot;
+				PRODUCT_NAME = "Apple Copilot";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		9099F1A0BAF64F700F39AC91 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Configuration/iOS.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = Z262GH82B2;
+				INFOPLIST_FILE = Configuration/iOS.Info.plist;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.lakphy.applecopilot;
+				PRODUCT_NAME = "Apple Copilot";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		947A66A8B6FEDE0A4A81CD50 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = Configuration/TranslationExtension.entitlements;
+				DEVELOPMENT_TEAM = Z262GH82B2;
+				INFOPLIST_FILE = Configuration/TranslationExtension.Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.lakphy.applecopilot.translation;
+				PRODUCT_NAME = AppleCopilotTranslation;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A62D8EC4E3309091F4F869CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Configuration/Mac.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = Configuration/Mac.Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.lakphy.applecopilot.mac;
+				PRODUCT_NAME = "Apple Copilot";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		C1A2B6433BDC40A98986AD4F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = Configuration/TranslationExtension.entitlements;
+				DEVELOPMENT_TEAM = Z262GH82B2;
+				INFOPLIST_FILE = Configuration/TranslationExtension.Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.lakphy.applecopilot.translation;
+				PRODUCT_NAME = AppleCopilotTranslation;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		D6A1779F51713CBDE2A920A1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APP_GROUP_IDENTIFIER = group.com.lakphy.applecopilot;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				KEYCHAIN_SHARED_SUFFIX = com.lakphy.applecopilot.shared;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		D6E734B5D3F9E531CD172BD3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Configuration/Mac.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = Configuration/Mac.Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.lakphy.applecopilot.mac;
+				PRODUCT_NAME = "Apple Copilot";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		752A35A9887A8392B527E515 /* Build configuration list for PBXNativeTarget "AppleCopilotTranslation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				947A66A8B6FEDE0A4A81CD50 /* Debug */,
+				C1A2B6433BDC40A98986AD4F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E99BB7D33A44252B654F4603 /* Build configuration list for PBXNativeTarget "AppleCopilot-macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A62D8EC4E3309091F4F869CA /* Debug */,
+				D6E734B5D3F9E531CD172BD3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EFD6676A912394E088B987F5 /* Build configuration list for PBXNativeTarget "AppleCopilot-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9099F1A0BAF64F700F39AC91 /* Debug */,
+				338C36B62DB4988F591BC8C0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F724B86F3CBBC9C946ECDB70 /* Build configuration list for PBXProject "AppleCopilot" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				229EC944A80B919118A324EA /* Debug */,
+				D6A1779F51713CBDE2A920A1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		80979F2B319FD119933ABFA1 /* XCLocalSwiftPackageReference "." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = .;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		390373C0D19DA3275FB9FDA9 /* CopilotUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CopilotUI;
+		};
+		43253435A07A124D4F85A1D7 /* CopilotUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CopilotUI;
+		};
+		A2027A91A08E4C99E36958BE /* CopilotCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CopilotCore;
+		};
+		B98CB6ED3BFEF092BD11FDFD /* CopilotCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CopilotCore;
+		};
+		C874BA25CB14B18BDE9D85F1 /* CopilotCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CopilotCore;
+		};
+		E59BE82EBD572539F59AA331 /* CopilotUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CopilotUI;
+		};
+		F80383DDD481ED501C61A30A /* MacIntegration */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MacIntegration;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 09817F7535F42FA3E3A0EA42 /* Project object */;
+}

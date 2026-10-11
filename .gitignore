@@ -1,0 +1,30 @@
+# Build products and local package state
+.build/
+build/
+DerivedData/
+.swiftpm/
+
+# Xcode and macOS user state
+.DS_Store
+xcuserdata/
+*.xcuserstate
+
+# Python test-fixture cache
+__pycache__/
+*.py[cod]
+
+# Local credentials, signing material, and runtime logs
+.env
+.env.*
+!.env.example
+*.p12
+*.p8
+*.mobileprovision
+*.provisionprofile
+*.key
+*.log
+*.jsonl
+
+# Installed third-party agent skills; sources are recorded in skills-lock.json
+.agents/skills/
+.claude/skills/

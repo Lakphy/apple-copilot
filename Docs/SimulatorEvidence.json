@@ -1,0 +1,316 @@
+{
+  "date": "2026-10-12",
+  "runtime": "iOS/iPadOS 26.4 (23E244)",
+  "xcode": "27.0 (27A266a)",
+  "mode": "Normal app + Translation Provider extension, live URLSession to loopback HTTP fixture",
+  "uses_real_remote_model": false,
+  "sessions": [
+    {
+      "platform": "iPhone",
+      "scope": "main_app",
+      "requests": [
+        {
+          "protocol": "chat",
+          "model": "copilot-test-model",
+          "roles": [
+            "user"
+          ],
+          "message_count": 1,
+          "follow_up_count": 0,
+          "context_valid": true,
+          "errors": [],
+          "public_source": "Good design makes complex things simple.",
+          "public_question": null,
+          "request": 1
+        },
+        {
+          "protocol": "chat",
+          "model": "copilot-test-model",
+          "roles": [
+            "user",
+            "assistant",
+            "user"
+          ],
+          "message_count": 3,
+          "follow_up_count": 1,
+          "context_valid": true,
+          "errors": [],
+          "public_source": "Good design makes complex things simple.",
+          "public_question": "[redacted]",
+          "request": 2
+        },
+        {
+          "protocol": "chat",
+          "model": "copilot-test-model",
+          "roles": [
+            "user",
+            "assistant",
+            "user",
+            "assistant",
+            "user"
+          ],
+          "message_count": 5,
+          "follow_up_count": 2,
+          "context_valid": true,
+          "errors": [],
+          "public_source": "Good design makes complex things simple.",
+          "public_question": "What does complex mean?",
+          "request": 3
+        }
+      ]
+    },
+    {
+      "platform": "iPhone",
+      "scope": "system_popup_initial",
+      "requests": [
+        {
+          "protocol": "chat",
+          "model": "copilot-test-model",
+          "roles": [
+            "user"
+          ],
+          "message_count": 1,
+          "follow_up_count": 0,
+          "context_valid": true,
+          "errors": [],
+          "public_source": "[redacted]",
+          "public_question": null,
+          "request": 4
+        },
+        {
+          "protocol": "chat",
+          "model": "copilot-test-model",
+          "roles": [
+            "user",
+            "assistant",
+            "user"
+          ],
+          "message_count": 3,
+          "follow_up_count": 1,
+          "context_valid": true,
+          "errors": [],
+          "public_source": "[redacted]",
+          "public_question": "What does complex mean?",
+          "request": 5
+        },
+        {
+          "protocol": "chat",
+          "model": "copilot-test-model",
+          "roles": [
+            "user",
+            "assistant",
+            "user",
+            "assistant",
+            "user"
+          ],
+          "message_count": 5,
+          "follow_up_count": 2,
+          "context_valid": true,
+          "errors": [],
+          "public_source": "[redacted]",
+          "public_question": "Make it more natural.",
+          "request": 6
+        }
+      ]
+    },
+    {
+      "platform": "iPad",
+      "scope": "main_app",
+      "requests": [
+        {
+          "protocol": "chat",
+          "model": "copilot-test-model",
+          "roles": [
+            "user"
+          ],
+          "message_count": 1,
+          "follow_up_count": 0,
+          "context_valid": true,
+          "errors": [],
+          "public_source": "Good design makes complex things simple.",
+          "public_question": null,
+          "request": 7
+        },
+        {
+          "protocol": "chat",
+          "model": "copilot-test-model",
+          "roles": [
+            "user",
+            "assistant",
+            "user"
+          ],
+          "message_count": 3,
+          "follow_up_count": 1,
+          "context_valid": true,
+          "errors": [],
+          "public_source": "Good design makes complex things simple.",
+          "public_question": "What does complex mean?",
+          "request": 8
+        },
+        {
+          "protocol": "chat",
+          "model": "copilot-test-model",
+          "roles": [
+            "user",
+            "assistant",
+            "user",
+            "assistant",
+            "user"
+          ],
+          "message_count": 5,
+          "follow_up_count": 2,
+          "context_valid": true,
+          "errors": [],
+          "public_source": "Good design makes complex things simple.",
+          "public_question": "Make it more natural.",
+          "request": 9
+        }
+      ]
+    },
+    {
+      "platform": "iPad",
+      "scope": "system_popup",
+      "requests": [
+        {
+          "protocol": "chat",
+          "model": "copilot-test-model",
+          "roles": [
+            "user"
+          ],
+          "message_count": 1,
+          "follow_up_count": 0,
+          "context_valid": true,
+          "errors": [],
+          "public_source": "Good design makes complex things simple.",
+          "public_question": null,
+          "request": 10
+        },
+        {
+          "protocol": "chat",
+          "model": "copilot-test-model",
+          "roles": [
+            "user",
+            "assistant",
+            "user"
+          ],
+          "message_count": 3,
+          "follow_up_count": 1,
+          "context_valid": true,
+          "errors": [],
+          "public_source": "Good design makes complex things simple.",
+          "public_question": "What does complex mean?",
+          "request": 11
+        },
+        {
+          "protocol": "chat",
+          "model": "copilot-test-model",
+          "roles": [
+            "user",
+            "assistant",
+            "user",
+            "assistant",
+            "user"
+          ],
+          "message_count": 5,
+          "follow_up_count": 2,
+          "context_valid": true,
+          "errors": [],
+          "public_source": "Good design makes complex things simple.",
+          "public_question": "Make it more natural.",
+          "request": 12
+        }
+      ]
+    },
+    {
+      "platform": "iPhone",
+      "scope": "system_popup_final",
+      "requests": [
+        {
+          "protocol": "chat",
+          "model": "copilot-test-model",
+          "roles": [
+            "user"
+          ],
+          "message_count": 1,
+          "follow_up_count": 0,
+          "context_valid": true,
+          "errors": [],
+          "public_source": "Good design makes complex things simple.",
+          "public_question": null,
+          "request": 13
+        },
+        {
+          "protocol": "chat",
+          "model": "copilot-test-model",
+          "roles": [
+            "user",
+            "assistant",
+            "user"
+          ],
+          "message_count": 3,
+          "follow_up_count": 1,
+          "context_valid": true,
+          "errors": [],
+          "public_source": "Good design makes complex things simple.",
+          "public_question": "What does complex mean?",
+          "request": 14
+        },
+        {
+          "protocol": "chat",
+          "model": "copilot-test-model",
+          "roles": [
+            "user",
+            "assistant",
+            "user",
+            "assistant",
+            "user"
+          ],
+          "message_count": 5,
+          "follow_up_count": 2,
+          "context_valid": true,
+          "errors": [],
+          "public_source": "Good design makes complex things simple.",
+          "public_question": "Make it more natural.",
+          "request": 15
+        }
+      ]
+    }
+  ],
+  "latest_system_history": {
+    "iPhone": {
+      "conversation_id": "1017A392-BFC0-4F86-B2B3-D2F35BE064E3",
+      "message_count": 6,
+      "roles": [
+        "user",
+        "assistant",
+        "user",
+        "assistant",
+        "user",
+        "assistant"
+      ],
+      "native_close_verified": true,
+      "history_ui_verified": true,
+      "focus_expands_sheet": true
+    },
+    "iPad": {
+      "conversation_id": "F391C6D9-C3CF-4CE7-B6B9-5AAB3516813A",
+      "message_count": 6,
+      "roles": [
+        "user",
+        "assistant",
+        "user",
+        "assistant",
+        "user",
+        "assistant"
+      ],
+      "native_close_verified": true,
+      "history_ui_verified": true,
+      "presentation": "System anchored popover"
+    }
+  },
+  "limitations": [
+    "No real BYOK remote-model quality or remote-network test",
+    "No physical-device/provisioning verification",
+    "No comprehensive dark appearance, Dynamic Type, or VoiceOver audit"
+  ]
+}
