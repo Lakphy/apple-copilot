@@ -11,7 +11,10 @@ public final class ConversationStore {
     public private(set) var conversation: Conversation?
     public private(set) var history: [Conversation] = []
     public private(set) var requestState: RequestState = .idle
-    public private(set) var pendingMessage: String?
+    public private(set) var pendingUserMessage: ChatMessage?
+    public var pendingMessage: String? { pendingUserMessage?.content }
+    /// Transient output is readable/copyable, but enters history only after a complete response.
+    public private(set) var streamingMessage: ChatMessage?
     public private(set) var errorMessage: String?
     public private(set) var historyErrorMessage: String?
     public private(set) var isLoadingHistory = false
@@ -23,6 +26,8 @@ public final class ConversationStore {
     @ObservationIgnored private var generation = UUID()
     @ObservationIgnored private var historyGeneration = UUID()
     @ObservationIgnored private var historyQuery = ""
+    @ObservationIgnored private var streamedText = ""
+    @ObservationIgnored private var lastStreamPublication = ContinuousClock.now
 
     public var isWorking: Bool { requestState == .working }
 
@@ -61,6 +66,7 @@ public final class ConversationStore {
 
     public func select(_ conversation: Conversation) {
         cancel()
+        streamingMessage = nil
         self.conversation = conversation
         requestState = .idle
         errorMessage = nil
@@ -68,6 +74,7 @@ public final class ConversationStore {
 
     public func newConversation() {
         cancel()
+        streamingMessage = nil
         conversation = nil
         requestState = .idle
         errorMessage = nil
@@ -75,10 +82,11 @@ public final class ConversationStore {
 
     public func cancel() {
         guard isWorking else { return }
+        publishStream()
         generation = UUID()
         operation?.cancel()
         operation = nil
-        pendingMessage = nil
+        pendingUserMessage = nil
         requestState = .cancelled
         errorMessage = nil
     }
@@ -115,20 +123,31 @@ public final class ConversationStore {
         let token = UUID()
         generation = token
         requestState = .working
-        pendingMessage = text
-        errorMessage = nil
         let userMessage = ChatMessage(role: .user, content: text)
+        pendingUserMessage = userMessage
+        streamedText = ""
+        streamingMessage = ChatMessage(role: .assistant, content: "")
+        lastStreamPublication = .now
+        errorMessage = nil
         let settings = settings
         let client = client
         let repository = repository
-        let task = Task<Conversation, any Error> {
+        let task = Task<Conversation, any Error> { [self] in
             let key = try await settings.credential(for: draft.configuration)
             try Task.checkCancellation()
             let messages = draft.messages + [userMessage]
-            let response = try await client.complete(configuration: draft.configuration, apiKey: key, messages: messages)
+            try await client.stream(configuration: draft.configuration, apiKey: key, messages: messages) {
+                [weak self] delta in
+                try await self?.receive(delta, generation: token)
+            }
             try Task.checkCancellation()
+            guard self.generation == token else { throw CancellationError() }
+            self.publishStream()
+            guard let response = self.streamingMessage,
+                !response.content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            else { throw CopilotError.emptyResponse }
             var completed = draft
-            completed.messages = messages + [ChatMessage(role: .assistant, content: response)]
+            completed.messages = messages + [response]
             completed.updatedAt = Date()
             // A failed/cancelled request never persists a lone user message.
             return try await repository.upsert(completed)
@@ -137,16 +156,20 @@ public final class ConversationStore {
         do {
             let completed = try await withTaskCancellationHandler {
                 try await task.value
-            } onCancel: { task.cancel() }
+            } onCancel: {
+                task.cancel()
+            }
             guard generation == token else { return }
             conversation = completed
-            pendingMessage = nil
+            streamingMessage = nil
+            pendingUserMessage = nil
             operation = nil
             requestState = .idle
             await loadHistory(query: historyQuery)
         } catch {
             guard generation == token else { return }
-            pendingMessage = nil
+            publishStream()
+            pendingUserMessage = nil
             operation = nil
             if error is CancellationError || Task.isCancelled {
                 requestState = .cancelled
@@ -156,30 +179,21 @@ public final class ConversationStore {
             }
         }
     }
-}
 
-public enum CopilotPreviewFixtures {
-    public static let conversation = Conversation(
-        id: UUID(uuidString: "00000000-0000-4000-8000-000000000001")!,
-        sourceText: "Good design makes complex things simple.", configuration: .default,
-        messages: [
-            ChatMessage(id: UUID(uuidString: "00000000-0000-4000-8000-000000000002")!,
-                        role: .user, content: "Good design makes complex things simple.",
-                        createdAt: Date(timeIntervalSince1970: 1_750_000_000)),
-            ChatMessage(id: UUID(uuidString: "00000000-0000-4000-8000-000000000003")!,
-                        role: .assistant, content: "好的设计让复杂的事情变得简单。",
-                        createdAt: Date(timeIntervalSince1970: 1_750_000_001))
-        ], createdAt: Date(timeIntervalSince1970: 1_750_000_000), updatedAt: Date(timeIntervalSince1970: 1_750_000_001)
-    )
-
-    @MainActor public static func settings() -> SettingsStore {
-        SettingsStore(repository: MemorySettingsRepository(), credentials: MemoryCredentialStore())
+    private func receive(_ delta: String, generation token: UUID) throws {
+        try Task.checkCancellation()
+        guard generation == token else { throw CancellationError() }
+        let first = streamedText.isEmpty
+        streamedText += delta
+        if first || lastStreamPublication.duration(to: .now) >= .milliseconds(50) { publishStream() }
     }
 
-    @MainActor public static func conversations(settings: SettingsStore) -> ConversationStore {
-        let store = ConversationStore(client: PreviewLanguageModelClient(),
-                                      repository: MemoryConversationRepository(conversations: [conversation]), settings: settings)
-        store.select(conversation)
-        return store
+    private func publishStream() {
+        guard !streamedText.isEmpty else { streamingMessage = nil; return }
+        if let message = streamingMessage {
+            streamingMessage = ChatMessage(
+                id: message.id, role: .assistant, content: streamedText, createdAt: message.createdAt)
+        }
+        lastStreamPublication = .now
     }
 }

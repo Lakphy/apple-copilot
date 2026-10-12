@@ -4,49 +4,27 @@ import CopilotCore
 public struct AppRootView: View {
     @Environment(CopilotEnvironment.self) private var environment
     @Environment(\.scenePhase) private var scenePhase
-    #if os(macOS)
-    @State private var visibility: NavigationSplitViewVisibility = .all
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     #endif
 
     public init() {}
 
     public var body: some View {
-        @Bindable var state = environment
         Group {
             #if os(macOS)
-            NavigationSplitView(columnVisibility: $visibility) {
-                List(selection: $state.section) {
-                    ForEach(AppSection.allCases) { section in
-                        Label(section.title, systemImage: section.symbol).tag(section)
-                    }
-                }
-                .navigationTitle("Apple Copilot")
-                .navigationSplitViewColumnWidth(min: 170, ideal: 210, max: 260)
-            } detail: {
-                switch environment.section {
-                case .history:
-                    HistoryView()
-                case .translate:
-                    NavigationStack { TranslateView() }
-                case .settings:
-                    NavigationStack { SettingsView() }
-                }
-            }
+            HistoryView(isWorkspace: true)
             #else
-            TabView(selection: $state.section) {
-                Tab("翻译", systemImage: AppSection.translate.symbol, value: AppSection.translate) {
-                    NavigationStack { TranslateView() }
-                }
-                Tab("历史", systemImage: AppSection.history.symbol, value: AppSection.history) {
-                    HistoryView()
-                }
-                Tab("设置", systemImage: AppSection.settings.symbol, value: AppSection.settings) {
-                    NavigationStack { SettingsView() }
+            GeometryReader { geometry in
+                if horizontalSizeClass == .regular && geometry.size.width >= 760 {
+                    HistoryView(isWorkspace: true)
+                } else {
+                    compactNavigation
                 }
             }
-            .tabViewStyle(.sidebarAdaptable)
             #endif
         }
+        .background(CopilotSurface.page, ignoresSafeAreaEdges: .all)
         .task { await environment.load() }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active {
@@ -57,4 +35,21 @@ public struct AppRootView: View {
             }
         }
     }
+
+    #if os(iOS)
+    private var compactNavigation: some View {
+        @Bindable var state = environment
+        return TabView(selection: $state.section) {
+            Tab("翻译", systemImage: AppSection.translate.symbol, value: AppSection.translate) {
+                NavigationStack { TranslateView() }
+            }
+            Tab("历史", systemImage: AppSection.history.symbol, value: AppSection.history) {
+                HistoryView()
+            }
+            Tab("设置", systemImage: AppSection.settings.symbol, value: AppSection.settings) {
+                NavigationStack { SettingsView() }
+            }
+        }
+    }
+    #endif
 }

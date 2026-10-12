@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  native:
+    # Matches the documented, locally verified Xcode 27 / Swift 6.4 toolchain.
+    # GitHub currently provides this toolchain on its Xcode 27 preview image.
+    runs-on: xcode-27
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+      - name: Format, documentation, tests, and platform builds
+        run: ./Scripts/check.sh
+
+  markdown:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: Scripts/MarkdownRenderer/package-lock.json
+      - name: Install pinned dependencies
+        working-directory: Scripts/MarkdownRenderer
+        run: npm ci --ignore-scripts
+      - name: Install WebKit
+        working-directory: Scripts/MarkdownRenderer
+        run: npx playwright install --with-deps webkit
+      - name: Rebuild and test bundled resources
+        shell: bash
+        run: |
+          cd Scripts/MarkdownRenderer
+          npm run build
+          npm test
+          git diff --exit-code -- ../../Sources/CopilotUI/Resources/Markdown

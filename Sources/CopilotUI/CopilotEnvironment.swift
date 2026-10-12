@@ -35,8 +35,10 @@ public final class CopilotEnvironment {
     @ObservationIgnored private var hasLoaded = false
     @ObservationIgnored private var loadTask: Task<Void, Never>?
 
-    public init(settings: SettingsStore, client: any LanguageModelClient,
-                conversations: any ConversationRepository, startupMessage: String? = nil) {
+    public init(
+        settings: SettingsStore, client: any LanguageModelClient,
+        conversations: any ConversationRepository, startupMessage: String? = nil
+    ) {
         self.settings = settings
         self.client = client
         self.conversations = conversations
@@ -77,8 +79,10 @@ public final class CopilotEnvironment {
         let root: URL
         #if os(iOS)
         let group = Bundle.main.object(forInfoDictionaryKey: "CopilotAppGroup") as? String
-        guard let group, let container = FileManager.default.containerURL(
-            forSecurityApplicationGroupIdentifier: group) else {
+        guard let group,
+            let container = FileManager.default.containerURL(
+                forSecurityApplicationGroupIdentifier: group)
+        else {
             return CopilotEnvironment(
                 settings: SettingsStore(repository: MemorySettingsRepository(), credentials: MemoryCredentialStore()),
                 client: URLSessionLanguageModelClient(), conversations: MemoryConversationRepository(),
@@ -94,17 +98,50 @@ public final class CopilotEnvironment {
         let settings = SettingsStore(
             repository: FileSettingsRepository(rootURL: root),
             credentials: KeychainCredentialStore(accessGroup: accessGroup))
-        return CopilotEnvironment(settings: settings, client: URLSessionLanguageModelClient(),
-                                  conversations: FileConversationRepository(rootURL: root))
+        return CopilotEnvironment(
+            settings: settings, client: URLSessionLanguageModelClient(),
+            conversations: FileConversationRepository(rootURL: root))
     }
 
-    public static func preview() -> CopilotEnvironment {
+    public static func preview(markdown: Bool = false) -> CopilotEnvironment {
+        let text =
+            (try? Bundle.module.url(forResource: "fixture", withExtension: "md", subdirectory: "Markdown")
+                .map { try String(contentsOf: $0, encoding: .utf8) }) ?? "# Markdown\n\n**示例回复**"
+        let conversation =
+            markdown
+            ? Conversation(
+                sourceText: "请展示 Markdown、代码和流程图。", configuration: .default,
+                messages: [
+                    ChatMessage(role: .user, content: "请展示 Markdown、代码和流程图。"),
+                    ChatMessage(role: .assistant, content: text),
+                ]) : CopilotPreviewFixtures.conversation
+        let client: any LanguageModelClient =
+            markdown ? MarkdownPreviewClient(text: text) : PreviewLanguageModelClient()
         let environment = CopilotEnvironment(
             settings: SettingsStore(repository: MemorySettingsRepository(), credentials: PreviewCredentials()),
-            client: PreviewLanguageModelClient(),
-            conversations: MemoryConversationRepository(conversations: [CopilotPreviewFixtures.conversation]))
-        environment.session.select(CopilotPreviewFixtures.conversation)
+            client: client,
+            conversations: MemoryConversationRepository(conversations: [conversation]))
+        environment.session.select(conversation)
         return environment
+    }
+}
+
+private struct MarkdownPreviewClient: LanguageModelClient {
+    let text: String
+    func complete(configuration: ProviderConfiguration, apiKey: String, messages: [ChatMessage]) async throws -> String
+    { text }
+    func stream(
+        configuration: ProviderConfiguration, apiKey: String, messages: [ChatMessage],
+        onDelta: @escaping @Sendable (String) async throws -> Void
+    ) async throws {
+        var cursor = text.startIndex
+        while cursor < text.endIndex {
+            try Task.checkCancellation()
+            let end = text.index(cursor, offsetBy: 16, limitedBy: text.endIndex) ?? text.endIndex
+            try await onDelta(String(text[cursor..<end]))
+            cursor = end
+            try await Task.sleep(for: .milliseconds(150))
+        }
     }
 }
 

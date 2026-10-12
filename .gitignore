@@ -12,6 +12,7 @@ xcuserdata/
 # Python test-fixture cache
 __pycache__/
 *.py[cod]
+node_modules/
 
 # Local credentials, signing material, and runtime logs
 .env
@@ -24,3 +25,10 @@ __pycache__/
 *.key
 *.log
 *.jsonl
+
+# Machine-specific signing overrides
+Configuration/Local.xcconfig
+
+# Local editor state
+.idea/
+.vscode/

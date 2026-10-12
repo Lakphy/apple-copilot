@@ -5,6 +5,30 @@ import Testing
 @Suite("Observable MV state and failure boundaries")
 @MainActor
 struct StoreTests {
+    @Test func saveReadinessUsesValidatedDraftAndEndpointCredentialIdentity() async throws {
+        let settings = await configuredSettings()
+        #expect(!settings.canSave)
+        #expect(settings.canRetainAPIKey)
+
+        settings.configuration.model = "another-model"
+        #expect(settings.canSave)
+        settings.apiKey = "header\ninjection"
+        #expect(!settings.canSave)
+        #expect(settings.validationMessage == CopilotError.invalidConfiguration("API Key 不能包含换行。").localizedDescription)
+        await settings.save()
+        #expect(settings.errorMessage == settings.validationMessage)
+        #expect(try await settings.credential() == "fixture-key")
+
+        settings.apiKey = ""
+        settings.configuration.baseURL = "https://another-provider.example/v1"
+        #expect(!settings.canRetainAPIKey)
+        #expect(!settings.canSave)
+        settings.apiKey = "replacement-key"
+        #expect(settings.canSave)
+        settings.configuration.model = " "
+        #expect(!settings.canSave)
+    }
+
     private func configuredSettings() async -> SettingsStore {
         let settings = SettingsStore(repository: MemorySettingsRepository(), credentials: MemoryCredentialStore())
         settings.apiKey = "fixture-key"
@@ -22,13 +46,51 @@ struct StoreTests {
         #expect(try await settings.credential() == "private-key")
     }
 
+    @Test func completingDeepSeekURLRetainsSavedKeyAndHistoryCredentialIdentity() async throws {
+        let original = ProviderConfiguration(baseURL: "https://api.deepseek.com", model: "deepseek-flash")
+        let credentials = MemoryCredentialStore()
+        try await credentials.save("fixture-key", account: original.credentialAccount)
+        let settings = SettingsStore(
+            repository: MemorySettingsRepository(configuration: original), credentials: credentials)
+        await settings.load()
+        settings.configuration.baseURL = try original.resolvedEndpoint().absoluteString
+        await settings.save()
+        #expect(settings.errorMessage == nil)
+        #expect(!settings.hasUnsavedChanges)
+        #expect(settings.savedConfiguration.baseURL == "https://api.deepseek.com/v1/chat/completions")
+        #expect(try await settings.credential(for: original) == "fixture-key")
+    }
+
+    @Test func refreshingReusedSettingsSwitchesNewTranslationFromLoopbackToDeepSeek() async throws {
+        let local = ProviderConfiguration(
+            baseURL: "http://localhost:56343/v1", model: "copilot-test-model", allowLocalHTTP: true)
+        let repository = MemorySettingsRepository(configuration: local)
+        let credentials = MemoryCredentialStore()
+        try await credentials.save("local-key", account: local.credentialAccount)
+        let settings = SettingsStore(repository: repository, credentials: credentials)
+        await settings.load()
+        let remote = ProviderConfiguration(baseURL: "https://api.deepseek.com", model: "deepseek-flash")
+        await repository.save(remote)
+        try await credentials.save("remote-key", account: remote.credentialAccount)
+        // Matches the extension re-reading configuration before a new sheet's translation.
+        await settings.refresh()
+        let client = RecordingClient()
+        let store = ConversationStore(client: client, repository: MemoryConversationRepository(), settings: settings)
+        await store.translate("test")
+        #expect(store.requestState == .idle)
+        #expect(await client.requests.first?.configuration == remote)
+        #expect(try await settings.credential() == "remote-key")
+    }
+
     @Test func unsavedEndpointEditsCannotReceiveSavedCredential() async throws {
         let settings = await configuredSettings()
         settings.configuration.baseURL = "https://untrusted.example/v1"
         #expect(settings.hasUnsavedChanges)
         #expect(settings.savedConfiguration.baseURL == ProviderConfiguration.default.baseURL)
         #expect(try await settings.credential() == "fixture-key")
-        await #expect(throws: CopilotError.providerChanged) { try await settings.credential(for: settings.configuration) }
+        await #expect(throws: CopilotError.providerChanged) {
+            try await settings.credential(for: settings.configuration)
+        }
         await settings.save()
         #expect(settings.savedConfiguration.baseURL == ProviderConfiguration.default.baseURL)
         #expect(settings.errorMessage == CopilotError.missingAPIKey.localizedDescription)
@@ -134,7 +196,8 @@ struct StoreTests {
 
     @Test func storageFailureDoesNotPublishASuccessfulUnstoredTurn() async throws {
         let settings = await configuredSettings()
-        let store = ConversationStore(client: RecordingClient(), repository: FailingConversationRepository(), settings: settings)
+        let store = ConversationStore(
+            client: RecordingClient(), repository: FailingConversationRepository(), settings: settings)
         await store.translate("Hello")
         #expect(store.requestState == .failed)
         #expect(store.conversation?.messages.isEmpty == true)
@@ -143,7 +206,8 @@ struct StoreTests {
 
     @Test func historyFailureIsDistinctFromTranslationFailure() async throws {
         let settings = await configuredSettings()
-        let store = ConversationStore(client: RecordingClient(), repository: FailingConversationRepository(), settings: settings)
+        let store = ConversationStore(
+            client: RecordingClient(), repository: FailingConversationRepository(), settings: settings)
         await store.loadHistory()
         #expect(store.historyErrorMessage == CopilotError.storageUnavailable.localizedDescription)
         #expect(store.errorMessage == nil)
@@ -222,7 +286,8 @@ private actor RecordingClient: LanguageModelClient {
     private var failure: CopilotError?
     init(failure: CopilotError? = nil) { self.failure = failure }
     func setFailure(_ failure: CopilotError?) { self.failure = failure }
-    func complete(configuration: ProviderConfiguration, apiKey: String, messages: [ChatMessage]) async throws -> String {
+    func complete(configuration: ProviderConfiguration, apiKey: String, messages: [ChatMessage]) async throws -> String
+    {
         requests.append(RecordedRequest(configuration: configuration, messages: messages))
         if let failure { throw failure }
         return "Bonjour"
@@ -238,7 +303,8 @@ private actor GateClient: LanguageModelClient {
         await withCheckedContinuation { waiting.append($0) }
     }
     func release(_ value: String) { response?.resume(returning: value); response = nil }
-    func complete(configuration: ProviderConfiguration, apiKey: String, messages: [ChatMessage]) async throws -> String {
+    func complete(configuration: ProviderConfiguration, apiKey: String, messages: [ChatMessage]) async throws -> String
+    {
         return await withCheckedContinuation { continuation in
             response = continuation
             started = true

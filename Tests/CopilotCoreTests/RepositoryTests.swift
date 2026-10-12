@@ -46,8 +46,12 @@ struct RepositoryTests {
         var one = Conversation(sourceText: "hello", configuration: .default)
         one.messages = [ChatMessage(role: .user, content: "hello"), ChatMessage(role: .assistant, content: "你好")]
         var two = one
-        one.messages.append(contentsOf: [ChatMessage(role: .user, content: "first"), ChatMessage(role: .assistant, content: "first reply")])
-        two.messages.append(contentsOf: [ChatMessage(role: .user, content: "second"), ChatMessage(role: .assistant, content: "second reply")])
+        one.messages.append(contentsOf: [
+            ChatMessage(role: .user, content: "first"), ChatMessage(role: .assistant, content: "first reply"),
+        ])
+        two.messages.append(contentsOf: [
+            ChatMessage(role: .user, content: "second"), ChatMessage(role: .assistant, content: "second reply"),
+        ])
         let snapshotOne = one
         let snapshotTwo = two
         async let savedOne = first.upsert(snapshotOne)
@@ -55,7 +59,8 @@ struct RepositoryTests {
         _ = try await (savedOne, savedTwo)
         let merged = try #require(try await first.load(id: one.id))
         #expect(merged.messages.count == 6)
-        #expect(Set(merged.messages.map(\.content)) == ["hello", "你好", "first", "first reply", "second", "second reply"])
+        #expect(
+            Set(merged.messages.map(\.content)) == ["hello", "你好", "first", "first reply", "second", "second reply"])
     }
 
     @Test func deletingPreventsALateRequestFromResurrectingHistory() async throws {
@@ -71,8 +76,10 @@ struct RepositoryTests {
 
     @Test func searchFindsFollowUpContentAndPreservesSnapshot() async throws {
         let repository = MemoryConversationRepository()
-        let config = ProviderConfiguration(model: "my-model", translationPrompt: "My original prompt", targetLanguage: "French")
-        let conversation = Conversation(sourceText: "hello", configuration: config, messages: [ChatMessage(role: .assistant, content: "Bonjour")])
+        let config = ProviderConfiguration(
+            model: "my-model", translationPrompt: "My original prompt", targetLanguage: "French")
+        let conversation = Conversation(
+            sourceText: "hello", configuration: config, messages: [ChatMessage(role: .assistant, content: "Bonjour")])
         _ = try await repository.upsert(conversation)
         let history = await repository.history(query: "Bonjour")
         #expect(history.first?.configuration == config)

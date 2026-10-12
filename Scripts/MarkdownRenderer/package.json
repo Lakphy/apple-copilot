@@ -1,0 +1,30 @@
+{
+  "name": "apple-copilot-markdown-renderer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test renderer.test.mjs"
+  },
+  "dependencies": {
+    "dompurify": "3.4.16",
+    "highlight.js": "11.12.0",
+    "gemoji": "8.1.0",
+    "marked": "18.1.0",
+    "marked-footnote": "1.4.0",
+    "marked-gfm-heading-id": "4.1.4",
+    "katex": "0.19.0",
+    "mermaid": "12.1.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "playwright": "1.64.0"
+  },
+  "overrides": {
+    "katex": "0.19.0"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  }
+}

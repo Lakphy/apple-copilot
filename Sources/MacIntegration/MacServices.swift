@@ -26,7 +26,8 @@ public final class AppleCopilotApplicationDelegate: NSObject, NSApplicationDeleg
         error: AutoreleasingUnsafeMutablePointer<NSString?>
     ) {
         guard let text = pasteboard.string(forType: .string),
-              !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        else {
             error.pointee = "请选择要翻译的文本。"
             return
         }

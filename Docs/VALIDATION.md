@@ -1,117 +1,55 @@
-# 运行与验证记录
+# 验证说明
 
-日期：2026-10-12（Asia/Shanghai）。工具链：Xcode 27.0（27A266a）、Swift 6.4；项目 deployment target 全部为 26.0。
+本页记录当前整理版本的可复现检查。之前的交互、模拟器诊断和截图证据保存在[历史归档](Archive/VALIDATION_2026-10-12.md)及[界面重构记录](UI_REDESIGN_VALIDATION.md)，不自动视为本轮重新验证。
 
-最终代码包含单一玻璃输入容器、初始化／历史行／Mac panel 修复、深色发送前景与 AX5 主翻译动作布局；**iOS/iPadOS Simulator 与 macOS 最后构建均 PASS**，退出码 0，无 warning／error。最新包均已重新启动。最终 iPhone／iPad 系统弹窗的内嵌发送、两轮上下文、系统关闭和六条消息共享历史均已实际复验；Mac 同 panel 设置返回与按钮／⌘Return 使用 Preview 验证。iPhone 追问及主翻译入口在 AX5＋深色＋提高对比度下限定实看通过，见 [界面重构验证](UI_REDESIGN_VALIDATION.md)。完整辅助技术覆盖尚未完成。
+## 检查入口
 
-下表的 SDK 检查与测试保留各自已验证范围；其中 Mac 及移动端交互行，以及下方 `mock-requests.jsonl` 的请求和 `BeforeRedesign` 截图，属于重构前的功能基线。重构中的外置按钮版另有 #2–#7 请求及六条消息持久化证据；这些功能数据不作为最终内嵌布局的验收结果。
-
-| 检查 | 结果 | 范围 |
-| --- | --- | --- |
-| `swift test --filter CopilotCoreTests` | 29 项通过，3 个 suite | 请求格式、解码、错误脱敏、URL 校验、配置快照、持久化、取消、跨进程写入与配置刷新 |
-| macOS arm64 Xcode 构建 | PASS | 完整主应用、共享 UI/Core、Mac Services；最终单一外层玻璃输入容器重新构建通过，并已重装启动 |
-| iOS Simulator 通用 Xcode 构建 | 通过，退出码 0 | iPhone/iPad 共用主应用，Translation Provider 扩展；两种 Simulator 架构 |
-| Simulator 运行包 Xcode 构建 | PASS | Xcode 签名步骤启用；主应用与扩展均嵌入 simulated entitlements；最终单一外层玻璃输入容器重新构建通过，iPhone／iPad 均已重装启动 |
-| iOS 真机通用 Xcode 构建 | 通过，退出码 0 | arm64 主应用与扩展；未签名、未安装真机 |
-| 六份 plist / entitlements lint | 全部通过 | App Group、共享 Keychain、网络权限、NSServices、ExtensionKit 标识 |
-| 扩展包检查 | 通过 | `.app/Extensions/AppleCopilotTranslation.appex`、`XPC!`、正确 EXExtensionPointIdentifier |
-| Mac 连续对话 | 实际运行通过 | Debug `--preview` 内存模型；原文→译文→追问→回复；⌘Return 发送 |
-| Mac 设置与导航 | 实际运行通过 | ⌘, 设置；已保存 key 对应 SecureField 为空；⌘N 清空；⌘2 历史 |
-| Mac 系统 Services | 基线实际运行通过 | 重构前：选中文字后 Services 菜单出现“使用 Apple Copilot 翻译”；真实服务派发打开原生浮动窗口，可追问。当时 Escape 关闭；当前输入框 Escape 改为只取消焦点，不关闭窗口 |
-| iPhone / iPad 模拟器启动 | 已恢复，实际运行通过 | iOS 26.4；两台原测试设备均 `Booted`，正常模式主应用已运行 |
-| iPhone 系统翻译弹窗 | 实际运行通过 | 系统默认翻译中识别 Apple Copilot；选中文字后打开原生 Translate 弹窗，扩展调用本机 HTTP 测试服务并显示回复 |
-| iPhone 弹窗连续追问 | 基线两轮实际运行通过 | 重构前复测请求 13 / 14 / 15 携带 1 / 3 / 5 条消息，聚焦输入后自动展开 sheet；上下文校验通过 |
-| iPhone 主应用与共享历史 | 实际运行通过 | 正常模式主应用翻译、两轮追问；主应用历史界面显示扩展创建的会话 |
-| iPad 主应用连续对话 | 两轮实际运行通过 | 正常模式翻译及两轮追问；请求 7 / 8 / 9 携带 1 / 3 / 5 条消息，上下文校验通过 |
-| iPad 系统翻译弹窗 | 实际运行通过 | 选中文字后打开原生 Translate popover；扩展翻译及两轮追问，请求 10 / 11 / 12 携带 1 / 3 / 5 条消息 |
-| iPad 共享历史 | 实际运行通过 | 系统 × 关闭后，主应用历史显示 03:00 创建的弹窗会话及完整六条消息 |
-| 扩展关闭交互 | 基线实际运行通过 | 两个平台均使用宿主自带 ×，移除扩展内重复的“完成”按钮；重构前 iPhone 与 iPad 复测均实际关闭成功 |
-| 最终 iPad 系统弹窗与共享历史 | 实际运行通过 | `ui-redesign-requests.jsonl` #8／#9／#10：1／3／5 条角色，`context_valid=true`、`errors=[]`；两次内嵌发送，系统 × 关闭，主 App 读取 03:57 新会话的六条消息 |
-| 最终 iPhone 系统弹窗与共享历史 | 实际运行通过 | 同一重构日志 #11／#12／#13：1／3／5 条角色，`context_valid=true`、`errors=[]`；两次内嵌发送，系统 × 关闭，主 App 读取 03:59 新会话的六条消息 |
-| 最终 Mac 服务窗口 | Preview 实际运行通过 | 设置留在同一 panel；返回标题恢复、追问草稿保留；内嵌按钮与 ⌘Return 成功。固定回复不代表真实 BYOK 或模型质量 |
-| Mac 最后构建主工作区与历史 | Preview 实际运行通过 | ⌘Return 发送两行追问，历史打开同一会话，原生选中高亮上的译文／元数据清楚；新图 `mac-history-composer.png`。此前 panel 流程不重复标记为最后纯外观修正后重测 |
-| 最新运行修复 | 源码对照与上述复验完成 | 历史选中摘要／元数据改为原生 primary；共享初始化 Task 与选区取消检查；Mac floating panel 保持可见并在设置切换后置前。对比度未测量，调度组合未做专项覆盖 |
-| 最后深色发送图标修正 | 构建与 iPhone 限定实看 PASS | AX5＋深色＋提高对比度；黑箭头在亮 accent 底上清楚，固定 44 pt 圆形不随字号扩大，四行输入内部滚动；新图 `iphone-composer-accessibility-final.png`，未测对比度比值 |
-| AX5 主翻译动作布局 | 构建与 iPhone 限定实看 PASS | accessibility 字号使用 VStack、标签 fixedSize；语言行与原生翻译按钮竖排，标签单行不互挤；新图 `iphone-translate-accessibility-final.png` 为禁用状态 |
-| 本轮设计审查 | 源码与最终截图已对照，验证范围已记录 | 基线 Needs work；见 DESIGN_REVIEW.md。不把旧弹窗或外置按钮版截图当作本版布局证据；VoiceOver、Reduce Transparency、IME 与全平台条件仍有缺口 |
-
-通用 SDK 编译检查使用 `CODE_SIGNING_ALLOWED=NO`。后续 Simulator 运行包使用 `CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO`；这证明本机模拟器的权限与扩展运行路径可用，不能证明真机或发行 provisioning profile。
-
-## 模拟器卡住的原因与恢复
-
-首次启动卡在系统 `CoreLocationMigrator.migrator`，发生于 App 运行前。只读进程采样显示：迁移程序等待 `locationd` 的同步 XPC 回复，`locationd` 等待 `BGSystemTaskScheduler`，该设备内部的 `dasd` 也停在启动阶段的同步调度请求。此前 iPhone 擦除、设备重启和仅该模拟器内的 `locationd` 重启均未解决；后续仅重启指定模拟器内部的 `dasd` 才使迁移完成。该证据定位了本次卡住的等待链，不证明所有同类问题都源于同一原因。
-
-iPhone 恢复后的 `bootstatus` 为 `Finished`、退出码 0；原 iPad 首次恢复在 63 秒完成，后续重新启动在 16 秒完成。两台设备均确认 `Booted` 并启动正常模式主应用。额外创建的任务诊断 iPad Air 也复现迁移等待，恢复后已关闭并保留数据。后续恢复未擦除设备，没有修改其他用户模拟器、宿主机定位服务或系统缓存。
-
-| 设备 | UDID | 已确认状态 |
-| --- | --- | --- |
-| iPhone 17 Pro | `A5A74FB8-85CA-4CE5-BD4F-87F4F1803A03` | Booted；正常模式 App 与系统翻译扩展运行 |
-| iPad Pro 13-inch (M5) | `F4920C68-7254-4F22-81FD-39EDF97016A2` | Booted；正常模式 App、系统翻译扩展与共享历史运行 |
-
-安全复现命令：
-
-```sh
-export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
-./Scripts/boot-simulator.sh A5A74FB8-85CA-4CE5-BD4F-87F4F1803A03
-# 仅在匹配本次迁移停滞时显式允许恢复：
-./Scripts/boot-simulator.sh A5A74FB8-85CA-4CE5-BD4F-87F4F1803A03 --recover-dasd
-```
-
-脚本要求完整且可用的 UDID，最多等待 180 秒；恢复选项只有在当前状态为迁移阶段、原因包含 `com.apple.locationd.migrator` 且持续至少 15 秒时生效，最多执行两次 `simctl spawn <UDID> launchctl kickstart -k user/$(id -u)/com.apple.dasd`，两次间隔至少 30 秒。不会擦除设备、禁用系统任务或重启宿主机服务。成功须同时满足 `bootstatus` 退出码 0、设备 `Booted`，以及 `Finished` 或已启动设备的精确完成标记。脚本已在上述 Booted iPhone 上无恢复参数实际运行，退出码 0；该次未触发 boot 或服务重启。两个脚本的 `zsh -n` 均通过。
-
-## 模拟器签名与实时测试
-
-之前将无签名构建产物事后 ad hoc 签名，`codesign` 能读取外部签名的 entitlement，但 Mach-O 缺少 `__TEXT/__entitlements`。安装日志成功并不代表能运行：iPhone 启动报告 `NSPOSIXErrorDomain` 163，iPad 启动请求长时间等待。改为让 Xcode 在构建时启用签名步骤，生成 `*-Simulated.xcent` 并链接 simulated entitlements 后，主应用、扩展、共享容器及默认翻译发现均可实际运行。
-
-```sh
-./Scripts/build-simulator.sh
-COPILOT_SIMULATOR_UDID='从 simctl list devices available 复制完整 UDID'
-xcrun simctl install "$COPILOT_SIMULATOR_UDID" \
-  'build/SimulatorRuntime/Build/Products/Debug-iphonesimulator/Apple Copilot.app'
-xcrun simctl launch "$COPILOT_SIMULATOR_UDID" com.lakphy.applecopilot
-```
-
-脚本复现此次成功的 Xcode 构建参数，并检查主应用及扩展 Mach-O 中存在 `__entitlements`。脚本已实际执行成功，退出码 0；它不会安装 App 或操作模拟器。签名中的 App Group、共享 Keychain 与 translation-app entitlement 已检查；本地模拟器签名不提供真机或发行授权。关闭控件调整后的模拟器与 Mac 构建均通过，无诊断。
-
-移动端交互使用正常 App 进程和 `Scripts/mock_model_server.py` 的回环 HTTP 服务，没有使用 `--preview`：
-
-```sh
-python3 Scripts/mock_model_server.py --port 56343 --log build/mock-requests.jsonl
-```
-
-设置为 OpenAI Chat Completions、`http://localhost:56343/v1`、模型 `copilot-test-model`、测试 key `local-simulator-key`，开启“允许本机 HTTP 服务”。两个平台的主应用和系统弹窗均经真实 `URLSession` 请求得到固定回复；日志记录脱敏的协议、消息角色和上下文校验结果，并仅对预先公开的测试句子保留文本。每组请求均为 1 / 3 / 5 条消息，连续两轮追问的 `context_valid` 均为 true。iPad 主应用对应请求 7 / 8 / 9，系统弹窗对应 10 / 11 / 12，原文均为 `Good design makes complex things simple.`，追问依次为 `What does complex mean?`、`Make it more natural.`。关闭弹窗后，主应用历史界面显示该会话完整六条消息。这验证了选择文本、进程间配置/历史和连续对话请求路径；真实模型翻译质量、远程服务及其网络异常未测试。
-
-| 截图 | 验证内容 |
+| 命令 | 范围 |
 | --- | --- |
-| [iphone-system-chat.png](Screenshots/BeforeRedesign/iphone-system-chat.png) | 重构前：iPhone 原生系统翻译弹窗及连续追问 |
-| [iphone-shared-history.png](Screenshots/BeforeRedesign/iphone-shared-history.png) | 重构前：iPhone 主应用读取扩展会话历史 |
-| [ipad-app-chat.png](Screenshots/BeforeRedesign/ipad-app-chat.png) | 重构前：iPad 正常模式主应用翻译及两轮追问 |
-| [ipad-system-chat.png](Screenshots/BeforeRedesign/ipad-system-chat.png) | 重构前：iPad 原生系统 popover 中的翻译及两轮追问 |
-| [ipad-shared-history.png](Screenshots/BeforeRedesign/ipad-shared-history.png) | 重构前：iPad 主应用读取弹窗创建的完整会话 |
+| `./Scripts/test.sh` | 全部 Swift 核心与原生 Mac 组件测试，以及随机端口 fixture 的真实 HTTP/流式请求 |
+| `./Scripts/test.sh --core-only` | 核心模块测试与回环 HTTP，不运行原生 UI 组件 |
+| `./Scripts/check.sh` | Swift 风格、文档本地链接、plist、脚本语法、Swift 测试、Mac 与 iOS Simulator 无签名构建 |
+| `./Scripts/check-markdown.sh` | 资源重建及 Playwright WebKit 渲染回归；CI 额外检查生成资源一致 |
+| `./Scripts/build-simulator.sh` | 可运行 Simulator 包及嵌入 simulated entitlements 检查 |
 
-重构前的 iOS 26.4 系统宿主对自定义“完成”按钮调用 `finish(translation: nil)` 未出现关闭响应；因此扩展移除该重复按钮，使用系统自带的 ×，iPhone 与 iPad 当时均实际关闭成功。最终内嵌布局中，两台设备的系统 × 关闭与共享历史已再次实际验证。当前 Mac 自有窗口使用原生关闭按钮；追问输入框的 Escape 只取消焦点，空输入可折叠，不关闭窗口。Apple 的 [`finish(translation:)` 文档](https://developer.apple.com/documentation/translationuiprovider/translationuiprovidercontext/finish%28translation%3A%29) 描述调用后框架关闭 sheet，`nil` 时不替换原文；上述历史观察与该预期不同。原文替换路径仍需单独验证。
+直接运行 `swift test` 时，未设置 `COPILOT_STREAM_TEST_URL` 会跳过真实 HTTP 用例。`test.sh` 自动启动隔离 fixture 并在结束时清理，无需手动启动第二个终端服务。
 
-重构前 iPhone 最后一次复测使用与 iPad 相同的公开原文与两个追问；系统会话请求为 13 / 14 / 15，关闭后历史保留六条交替的 user / assistant 消息。该轮共 15 次实际 HTTP 请求的上下文检查全部通过；脱敏记录和共享历史核对结果保存在 [SimulatorEvidence.json](SimulatorEvidence.json)。这组请求独立于重构验证日志，编号不合并计算。
+## 本轮检查
 
-## 模拟器文本输入复现
+检查日期：2026-10-12。环境：Xcode 27.0（27A266a）/ Swift 6.4，Apple Silicon Mac；浏览器测试使用 Node.js 22.23.2 / npm 10.9.8。
 
-Xcode 27 的 `devicectl device pasteboard copy` 从标准输入读取 UTF-8 文本，默认写入多种文本 UTI。命令选择测试设备的剪贴板，输入仅使用公开测试文本：
+| 检查 | 结果 | 实际范围 |
+| --- | --- | --- |
+| Swift 核心测试 | 52 项通过、6 个 suite | 包含三协议真实回环流式请求、新增 HTTP response metadata 和保存条件回归 |
+| 原生 Mac 组件测试 | 14 项通过、4 个 suite | 原生 WebKit、语义外观、文本组合、键盘提交和滚轮 |
+| Playwright WebKit | 13 项通过 | 使用 `npm ci --ignore-scripts` 后的干净依赖安装与资源重建 |
+| macOS 应用构建 | 通过，退出码 0 | 本机架构的无签名 Debug 主应用及共享模块 |
+| iOS Simulator 构建 | 通过，退出码 0 | 主应用、共享模块和嵌入的 Translation Provider 扩展 |
+| 风格、文档、配置和脚本检查 | 通过 | Swift strict lint、本地链接、六份 plist/entitlements、zsh/Python 语法 |
+| XcodeGen 与签名覆盖 | 通过 | 二次生成文件一致；本地 xcconfig 的 Team/App Group/Keychain 覆盖生效；测试覆盖文件已清理 |
+| Mac 主页面预览 | 限定实看通过 | 独立 Debug 内存预览：富文本会话、历史选择、设置、⌘N 空白状态 |
+| 凭据模式扫描 | 未发现匹配 | 工作区中原创项目文件的 key/private-key 文本模式；不等同全面安全审计 |
 
-```sh
-export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
-COPILOT_SIMULATOR_UDID='F4920C68-7254-4F22-81FD-39EDF97016A2'
-printf '%s' 'Good design makes complex things simple.' | \
-  xcrun devicectl device pasteboard copy --device "$COPILOT_SIMULATOR_UDID"
-```
+原生构建为无签名编译检查。综合构建最初出现 Mac 双架构目的地选择提示；脚本改为明确本机架构后，Mac 构建重新通过且没有该提示。预览检查使用独立 bundle 和固定数据，未操作生产历史或真实密钥。Node 干净安装报告 0 vulnerabilities，这是检查时的包管理器快照。
 
-随后在目标 App 的文本框中使用界面“粘贴”，选中该句并点“翻译”；在扩展输入框分别发送上述两个公开追问。本次 iPad 中 `simctl pbcopy` 未使 UIKit 输入框收到文本，Xcode 27 的上述命令可正常粘贴。命令帮助已核对；该差异是环境观察，尚不能归因于具体 pasteboard provider 实现。验证期间在 Device Hub“Edit → Use Shared Clipboard”中调整了测试设备的同步选项；结束后均通过相同菜单恢复原来的开关状态。
+GitHub CI 配置已增加，尚未在远程运行。未把历史 Simulator 交互结果算作本轮重测。
 
-iPhone 追问和主翻译入口的 AX5＋深色＋Increase Contrast 限定运行与新图已记录；VoiceOver、Reduce Transparency、中文输入法候选确认，以及全平台字号／外观／控件状态组合尚未完成。
+## 已覆盖的行为
 
-## 发布或真机前需要完成
+- 三协议请求构造、可见文本解码、完整会话上下文、提示词变量和端点规范化。
+- HTTPS/回环 HTTP 校验、重定向拒绝、错误脱敏和密钥 header 校验。
+- SSE 换行、跨字节 UTF-8、多行 data、完成/截断/错误事件和 JSON 兼容返回。
+- 流式输出、取消、迟到响应、失败重试、草稿保存条件和完整问答持久化。
+- 独立文件写入、陈旧会话合并、删除 tombstone、配置刷新和密钥身份隔离。
+- macOS 原生文本组合、Return/Option/Command 提交规则、滚轮事件转交、WebKit 本地文件、桥接、测高和外观变化。
+- 浏览器 GFM、代码复制、公式、Mermaid、稳定 DOM/选区、图片显式加载与 HTML 注入回归。
 
-- 配置开发者 Team、拥有的 Bundle ID、App Group 与共享 Keychain capability。
-- 在设备上选择 Apple Copilot 为默认翻译 App，验证系统调用、展开、取消、追问、替换原文及历史共享。
-- 使用真实 BYOK 服务分别验证三协议连接、API key 权限、翻译质量和网络异常。测试未持有用户真实密钥；Mac 交互使用内存模型，移动端使用回环 HTTP 测试服务，没有远程模型调用。
-- 完成 VoiceOver、完整键盘、Reduce Transparency、IME 和其他平台／控件的字号、外观、提高对比度检查。已测 iPhone 两个界面的条件不能代表全部覆盖；实际对比度比值未测量。
-- 添加正式 App Icon、发行签名及 App Store 元数据。当前交付为文本非流式最小版本。
+## 仍需单独验证
+
+- 拥有对应 capability 的真实设备签名、系统默认翻译调用、替换原文和进程共享路径。
+- 各服务商的真实远程连接、账户/模型权限、速率限制和翻译质量。本机 fixture 不证明远程服务可用。
+- 完整 VoiceOver、键盘、输入法、最大字号、降低透明度及多平台外观组合。组件测试不等同完整 UI 自动化。
+- 发行签名、公证、App Store 提交和更早 Xcode 工具链的兼容性。
+- GitHub Actions 的实际运行结果；本轮只验证本地脚本和构建。
+
+开源整理和许可状态见[研究记录](OPEN_SOURCE_REVIEW.md)与[第三方声明](../THIRD_PARTY_NOTICES.md)。

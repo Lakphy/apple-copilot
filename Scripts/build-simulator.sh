@@ -3,7 +3,8 @@
 # afterward is insufficient for simulator App Groups and translation registration.
 set -euo pipefail
 project_root="${0:A:h:h}"
-export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}"
+# Honor DEVELOPER_DIR or the active xcode-select toolchain.
+export DEVELOPER_DIR="${DEVELOPER_DIR:-$(xcode-select -p)}"
 
 if (( $# > 1 )); then
   print -u2 -r -- "Usage: $0 [DERIVED_DATA_PATH]"

@@ -2,7 +2,8 @@
 # Boot one explicitly selected simulator. No erase, global service, or cache changes.
 # Opt-in recovery restarts only this device's dasd after a known migration stall.
 set -euo pipefail
-export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}"
+# Honor DEVELOPER_DIR or the active xcode-select toolchain.
+export DEVELOPER_DIR="${DEVELOPER_DIR:-$(xcode-select -p)}"
 
 usage() {
   print -r -- "Usage: $0 UDID [--recover-dasd]"

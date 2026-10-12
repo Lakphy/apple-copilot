@@ -1,0 +1,9 @@
+// Copy to Local.xcconfig for device signing; this file is ignored by Git.
+// Replace every example value with identifiers registered to your team.
+DEVELOPMENT_TEAM = YOUR_TEAM_ID
+APP_GROUP_IDENTIFIER = group.com.example.applecopilot
+KEYCHAIN_SHARED_SUFFIX = com.example.applecopilot.shared
+
+// Supply per-target bundle identifiers in Xcode, project.yml, or on the command
+// line. A shared PRODUCT_BUNDLE_IDENTIFIER here would give the app and extension
+// the same identifier and must not be used.

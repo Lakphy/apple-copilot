@@ -12,6 +12,7 @@ struct AppleCopilotApp: App {
     #endif
     @State private var environment: CopilotEnvironment = {
         #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("--preview-markdown") { return .preview(markdown: true) }
         if ProcessInfo.processInfo.arguments.contains("--preview") { return .preview() }
         #endif
         return .live()
@@ -24,37 +25,36 @@ struct AppleCopilotApp: App {
 
     var body: some Scene {
         #if os(macOS)
-        mainWindow.defaultSize(width: 1000, height: 720)
-        .commands {
-            CommandGroup(replacing: .newItem) {
-                Button("新翻译") {
-                    environment.startNewTranslation()
-                    openWindow(id: "main")
-                }.keyboardShortcut("n", modifiers: .command)
+        mainWindow.defaultSize(width: 900, height: 760)
+            .commands {
+                CommandGroup(replacing: .newItem) {
+                    Button("新翻译") {
+                        environment.startNewTranslation()
+                        openWindow(id: "main")
+                    }.keyboardShortcut("n", modifiers: .command)
+                }
+                CommandGroup(replacing: .appSettings) {
+                    Button("设置…") { show(.settings) }
+                        .keyboardShortcut(",", modifiers: .command)
+                }
+                CommandGroup(after: .saveItem) {
+                    Button("保存设置") { settingsActions?.save() }
+                        .keyboardShortcut("s", modifiers: .command)
+                        .disabled(settingsActions?.canSave != true)
+                }
+                CommandMenu("翻译") {
+                    Button("翻译工作区") { show(.translate) }
+                        .keyboardShortcut("1", modifiers: .command)
+                    Button("历史记录") { show(.history) }
+                        .keyboardShortcut("2", modifiers: .command)
+                    Button("发送") { actions?.send() }
+                        .keyboardShortcut(.return, modifiers: .command)
+                        .disabled(actions?.canSend != true || actions?.isWorking == true)
+                    Button("停止生成") { actions?.cancel() }
+                        .keyboardShortcut(".", modifiers: .command)
+                        .disabled(actions?.isWorking != true)
+                }
             }
-            CommandGroup(replacing: .appSettings) {
-                Button("设置…") { show(.settings) }
-                    .keyboardShortcut(",", modifiers: .command)
-            }
-            CommandGroup(after: .saveItem) {
-                Button("保存设置") { settingsActions?.save() }
-                    .keyboardShortcut("s", modifiers: .command)
-                    .disabled(settingsActions?.canSave != true)
-            }
-            CommandMenu("翻译") {
-                Button("翻译工作区") { show(.translate) }
-                    .keyboardShortcut("1", modifiers: .command)
-                Button("历史记录") { show(.history) }
-                    .keyboardShortcut("2", modifiers: .command)
-                Button("发送") { actions?.send() }
-                    .keyboardShortcut(.return, modifiers: .command)
-                    .disabled(actions?.canSend != true || actions?.isWorking == true)
-                Button("停止生成") { actions?.cancel() }
-                    .keyboardShortcut(".", modifiers: .command)
-                    .disabled(actions?.isWorking != true)
-            }
-            SidebarCommands()
-        }
         #else
         mainWindow
         #endif
@@ -64,7 +64,7 @@ struct AppleCopilotApp: App {
         #if os(macOS)
         Window("Apple Copilot", id: "main") {
             AppRootView().environment(environment)
-                .frame(minWidth: 600, minHeight: 500)
+                .frame(minWidth: 760, minHeight: 600)
                 .onAppear { delegate.environment = environment }
         }
         #else

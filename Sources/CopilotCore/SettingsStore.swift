@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 
+/// Editable settings and a saved snapshot, with endpoint-scoped credentials.
 @MainActor
 @Observable
 public final class SettingsStore {
@@ -18,6 +19,34 @@ public final class SettingsStore {
     @ObservationIgnored private let credentials: any CredentialStore
 
     public var hasUnsavedChanges: Bool { configuration != savedConfiguration || !apiKey.isEmpty }
+
+    /// A safe explanation of invalid draft values, independent of UI presentation.
+    public var validationMessage: String? {
+        do {
+            try configuration.validate()
+            _ = try validatedAPIKey(apiKey)
+            return nil
+        } catch {
+            return safeMessage(for: error)
+        }
+    }
+
+    /// Whether leaving the credential draft empty retains this endpoint's saved key.
+    public var canRetainAPIKey: Bool {
+        guard hasSavedAPIKey,
+            let account = try? configuration.credentialAccount,
+            let savedAccount = try? savedConfiguration.credentialAccount
+        else { return false }
+        return account == savedAccount
+    }
+
+    /// Whether the draft is valid, changed, and has a usable credential.
+    ///
+    /// Startup capability failures are handled separately by the app environment.
+    public var canSave: Bool {
+        validationMessage == nil && !isLoading && !isSaving && hasUnsavedChanges
+            && (canRetainAPIKey || !apiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+    }
 
     public init(repository: any SettingsRepository, credentials: any CredentialStore) {
         self.repository = repository
@@ -59,19 +88,17 @@ public final class SettingsStore {
         errorMessage = nil
         defer { isSaving = false }
         let draft = configuration
-        let replacement = apiKey.trimmingCharacters(in: .whitespacesAndNewlines)
         do {
             try draft.validate()
+            let replacement = try validatedAPIKey(apiKey)
             let account = try draft.credentialAccount
             let oldAccount = try savedConfiguration.credentialAccount
-            guard !replacement.contains(where: { $0.isNewline || $0 == "\r" }) else {
-                throw CopilotError.invalidConfiguration("API Key 不能包含换行。")
-            }
             if !replacement.isEmpty {
                 try await credentials.save(replacement, account: account)
             } else {
                 guard account == oldAccount,
-                      let existing = try await credentials.load(account: account), !existing.isEmpty else {
+                    let existing = try await credentials.load(account: account), !existing.isEmpty
+                else {
                     throw CopilotError.missingAPIKey
                 }
             }

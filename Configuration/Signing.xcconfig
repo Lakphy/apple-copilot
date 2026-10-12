@@ -1,0 +1,6 @@
+// Development defaults preserve existing installations and shared data.
+APP_GROUP_IDENTIFIER = group.com.lakphy.applecopilot
+KEYCHAIN_SHARED_SUFFIX = com.lakphy.applecopilot.shared
+
+// Local overrides are optional and never committed.
+#include? "Local.xcconfig"

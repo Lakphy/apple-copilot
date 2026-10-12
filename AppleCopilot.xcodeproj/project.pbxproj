@@ -53,6 +53,7 @@
 		1D2FA8644D4FFB730C10C9B2 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		309451E42EA6A4A0952AE105 /* AppleCopilot-iOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "AppleCopilot-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		36F1578800B479AE4A4D07C5 /* AppleCopilotApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleCopilotApp.swift; sourceTree = "<group>"; };
+		4CC60286F38490156BE3F4C8 /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>"; };
 		EA25DB228436C7963B117443 /* AppleCopilotTranslationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleCopilotTranslationExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -98,6 +99,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		20208B706563C3075BEA078F /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				4CC60286F38490156BE3F4C8 /* Signing.xcconfig */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
 		65B51A32867E25BABEDE8255 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
@@ -126,6 +135,7 @@
 		A3C5D590F9E0F0BA0CD0D805 = {
 			isa = PBXGroup;
 			children = (
+				20208B706563C3075BEA078F /* Configuration */,
 				65B51A32867E25BABEDE8255 /* Packages */,
 				997E4A82CD4C20413574B5B4 /* Resources */,
 				99676D688D79F40463B70274 /* Sources */,
@@ -227,11 +237,9 @@
 				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					5FB7849C671F2E4F23043CF8 = {
-						DevelopmentTeam = Z262GH82B2;
 						ProvisioningStyle = Automatic;
 					};
 					6065B46D3371DC932B664DC1 = {
-						DevelopmentTeam = Z262GH82B2;
 						ProvisioningStyle = Automatic;
 					};
 					7B01B277109C2298E5E20889 = {
@@ -320,9 +328,9 @@
 /* Begin XCBuildConfiguration section */
 		229EC944A80B919118A324EA /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4CC60286F38490156BE3F4C8 /* Signing.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_GROUP_IDENTIFIER = group.com.lakphy.applecopilot;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -375,7 +383,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				KEYCHAIN_SHARED_SUFFIX = com.lakphy.applecopilot.shared;
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 0.1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -394,7 +401,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Configuration/iOS.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = Z262GH82B2;
 				INFOPLIST_FILE = Configuration/iOS.Info.plist;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -415,7 +421,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Configuration/iOS.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = Z262GH82B2;
 				INFOPLIST_FILE = Configuration/iOS.Info.plist;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -435,7 +440,6 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_ENTITLEMENTS = Configuration/TranslationExtension.entitlements;
-				DEVELOPMENT_TEAM = Z262GH82B2;
 				INFOPLIST_FILE = Configuration/TranslationExtension.Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -472,7 +476,6 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_ENTITLEMENTS = Configuration/TranslationExtension.entitlements;
-				DEVELOPMENT_TEAM = Z262GH82B2;
 				INFOPLIST_FILE = Configuration/TranslationExtension.Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -488,9 +491,9 @@
 		};
 		D6A1779F51713CBDE2A920A1 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4CC60286F38490156BE3F4C8 /* Signing.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_GROUP_IDENTIFIER = group.com.lakphy.applecopilot;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -537,7 +540,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				KEYCHAIN_SHARED_SUFFIX = com.lakphy.applecopilot.shared;
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 0.1.0;
 				MTL_ENABLE_DEBUG_INFO = NO;

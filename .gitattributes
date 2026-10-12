@@ -1,0 +1,16 @@
+* text=auto
+*.swift text eol=lf
+*.sh text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.xcconfig text eol=lf
+*.png binary
+*.ttf binary
+*.woff binary
+*.woff2 binary
+
+# Preserve whitespace inside generated JavaScript template strings.
+Sources/CopilotUI/Resources/Markdown/renderer.js -whitespace linguist-generated=true
+Sources/CopilotUI/Resources/Markdown/mermaid.js -whitespace linguist-generated=true
+Sources/CopilotUI/Resources/Markdown/katex.css linguist-generated=true

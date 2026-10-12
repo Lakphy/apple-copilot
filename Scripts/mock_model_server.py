@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import json
 import threading
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -53,8 +54,8 @@ def inspect_context(protocol: str, body: dict) -> tuple[list, list[str]]:
                 errors.append("Anthropic max_tokens is missing")
     if not isinstance(prompt, str) or not prompt.strip():
         errors.append("System prompt is empty")
-    if body.get("stream") is not False:
-        errors.append("Fixture expects non-streaming request")
+    if not isinstance(body.get("stream"), bool):
+        errors.append("Fixture expects an explicit stream boolean")
     if not isinstance(turns, list) or not turns or len(turns) % 2 != 1:
         return [], errors + ["Context must have an odd number of turns ending in user"]
     for index, message in enumerate(turns):
@@ -103,6 +104,39 @@ class FixtureHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(data)
 
+    def stream_reply(self, protocol: str, text: str) -> None:
+        self.send_response(200)
+        self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+        self.send_header("Cache-Control", "no-cache")
+        self.end_headers()
+        try:
+            for offset in range(0, len(text), 4):
+                delta = text[offset:offset + 4]
+                if protocol == "chat":
+                    payload = {"choices": [{"index": 0, "delta": {"content": delta}}]}
+                    event = ""
+                elif protocol == "responses":
+                    payload = {"type": "response.output_text.delta", "delta": delta}
+                    event = "event: response.output_text.delta\n"
+                else:
+                    payload = {"type": "content_block_delta", "index": 0,
+                               "delta": {"type": "text_delta", "text": delta}}
+                    event = "event: content_block_delta\n"
+                frame = event + "data: " + json.dumps(payload, ensure_ascii=False) + "\n\n"
+                self.wfile.write(frame.encode("utf-8"))
+                self.wfile.flush()
+                time.sleep(0.03)
+            if protocol == "chat":
+                final = "data: [DONE]\n\n"
+            elif protocol == "responses":
+                final = 'event: response.completed\ndata: {"type":"response.completed","response":{"status":"completed"}}\n\n'
+            else:
+                final = 'event: message_stop\ndata: {"type":"message_stop"}\n\n'
+            self.wfile.write(final.encode("utf-8"))
+            self.wfile.flush()
+        except (BrokenPipeError, ConnectionResetError):
+            pass  # A stopped generation closes its socket.
+
     def do_GET(self) -> None:
         if self.path == "/health":
             self.reply(200, {"ready": True, "requests": self.server.request_count})
@@ -141,6 +175,7 @@ class FixtureHandler(BaseHTTPRequestHandler):
         question = user_turns[-1].get("content") if len(user_turns) > 1 else None
         self.server.record({
             "protocol": protocol, "model": MODEL if model == MODEL else "[redacted]",
+            "stream": body.get("stream"),
             "roles": roles, "message_count": len(turns), "follow_up_count": max(0, len(user_turns) - 1),
             "context_valid": not errors, "errors": errors,
             "public_source": SOURCE if source == SOURCE else "[redacted]",
@@ -151,6 +186,9 @@ class FixtureHandler(BaseHTTPRequestHandler):
             return
         turn = len(user_turns) - 1
         text = answer_for_turn(turn)
+        if body.get("stream"):
+            self.stream_reply(protocol, text)
+            return
         if protocol == "chat":
             payload = {"id": "fixture-chat", "object": "chat.completion", "model": MODEL,
                        "choices": [{"index": 0, "message": {"role": "assistant", "content": text}, "finish_reason": "stop"}]}

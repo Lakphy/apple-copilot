@@ -6,6 +6,11 @@ import CopilotCore
         .environment(CopilotEnvironment.preview())
 }
 
+#Preview("Markdown、代码与 Mermaid") {
+    NavigationStack { TranslateView() }
+        .environment(CopilotEnvironment.preview(markdown: true))
+}
+
 #Preview("空白翻译") {
     let environment = CopilotEnvironment.preview()
     environment.session.newConversation()
@@ -21,10 +26,12 @@ import CopilotCore
 }
 
 #Preview("系统翻译内容 · 窄弹窗") {
-    TranslationOverlayView(selectedText: "Good design makes complex things simple.",
-                           finish: { _ in }, expand: {})
-        .environment(CopilotEnvironment.preview())
-        .frame(width: 340, height: 500)
+    TranslationOverlayView(
+        selectedText: "Good design makes complex things simple.",
+        finish: { _ in }, expand: {}
+    )
+    .environment(CopilotEnvironment.preview())
+    .frame(width: 340, height: 500)
 }
 
 #Preview("追问 · 多行") {
@@ -50,8 +57,10 @@ private struct PreviewRequestState: View {
         self.fails = fails
         let settings = SettingsStore(repository: MemorySettingsRepository(), credentials: MemoryCredentialStore())
         self.settings = settings
-        _store = State(initialValue: ConversationStore(client: PendingPreviewClient(fails: fails),
-                                                      repository: MemoryConversationRepository(), settings: settings))
+        _store = State(
+            initialValue: ConversationStore(
+                client: PendingPreviewClient(fails: fails),
+                repository: MemoryConversationRepository(), settings: settings))
     }
 
     var body: some View {
@@ -67,7 +76,8 @@ private struct PreviewRequestState: View {
 
 private struct PendingPreviewClient: LanguageModelClient {
     let fails: Bool
-    func complete(configuration: ProviderConfiguration, apiKey: String, messages: [ChatMessage]) async throws -> String {
+    func complete(configuration: ProviderConfiguration, apiKey: String, messages: [ChatMessage]) async throws -> String
+    {
         if fails { throw CopilotError.httpStatus(429) }
         try await Task.sleep(for: .seconds(3600))
         return "好的设计让复杂的事情变得简单。"
