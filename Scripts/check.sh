@@ -13,6 +13,7 @@ for script in Scripts/*.sh; do
   zsh -n "$script"
 done
 python3 -m py_compile Scripts/*.py
+python3 -m unittest discover -s Tests/ScriptTests -v
 ./Scripts/test.sh
 xcodebuild -quiet -project AppleCopilot.xcodeproj -scheme AppleCopilot-macOS \
   -destination "platform=macOS,arch=$(uname -m)" -derivedDataPath build/macOS CODE_SIGNING_ALLOWED=NO build

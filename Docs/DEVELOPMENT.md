@@ -28,6 +28,8 @@ python3 Scripts/check_docs.py
 
 `test.sh` 使用 Python 标准库在随机端口启动 fixture，等待就绪后设置 `COPILOT_STREAM_TEST_URL`，结束时清理自己的子进程和临时日志。没有固定端口冲突，也不需要真实 API key。直接运行 `swift test` 仍可执行内存/原生测试，但未设置变量时会跳过回环 HTTP 用例。
 
+fixture 直接绑定 `127.0.0.1`，跳过 HTTPServer 默认的反向 DNS 查询，避免隔离 CI 主机在报告就绪前卡住。启动失败时会显示解释器和子进程状态。`check.sh` 同时运行 `Tests/ScriptTests` 的 Python 标准库回归测试；可单独执行 `python3 -m unittest discover -s Tests/ScriptTests -v`。
+
 `CopilotUITests` 是 macOS 的 Swift Testing 原生组件测试，使用 AppKit/WebKit，并非 XCUITest。需要可运行原生 UI 的 macOS 环境。核心依赖 Darwin 与 Security，当前不支持 Linux 构建。
 
 ## 工程与签名

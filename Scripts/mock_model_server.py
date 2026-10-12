@@ -16,6 +16,7 @@ import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from socketserver import TCPServer
 
 DUMMY_KEY = "local-simulator-key"
 MODEL = "copilot-test-model"
@@ -79,6 +80,13 @@ class FixtureServer(ThreadingHTTPServer):
         self.log_path = log_path
         self.log_lock = threading.Lock()
         self.log_path.parent.mkdir(parents=True, exist_ok=True)
+
+    def server_bind(self) -> None:
+        # HTTPServer.server_bind performs a reverse DNS lookup before returning.
+        # This loopback fixture needs no hostname lookup; isolated CI hosts may stall it.
+        TCPServer.server_bind(self)
+        self.server_name = "localhost"
+        self.server_port = self.server_address[1]
 
     def record(self, record: dict) -> None:
         with self.log_lock:
@@ -207,7 +215,7 @@ def main() -> None:
     parser.add_argument("--log", type=Path, default=Path("build/mock-requests.jsonl"))
     arguments = parser.parse_args()
     server = FixtureServer(("127.0.0.1", arguments.port), arguments.log)
-    print(json.dumps({"ready": True, "base_url": f"http://localhost:{server.server_port}/v1",
+    print(json.dumps({"ready": True, "base_url": f"http://127.0.0.1:{server.server_port}/v1",
                       "model": MODEL, "dummy_key": DUMMY_KEY, "log": str(arguments.log.resolve())}), flush=True)
     try:
         server.serve_forever()

@@ -20,8 +20,9 @@ def main() -> int:
     parser.add_argument("--core-only", action="store_true", help="Exclude native macOS view tests")
     arguments = parser.parse_args()
     with tempfile.TemporaryDirectory(prefix="apple-copilot-tests-") as directory:
+        print(f"Starting loopback fixture with Python {sys.version.split()[0]} ({sys.executable}).", flush=True)
         server = subprocess.Popen(
-            [sys.executable, str(ROOT / "Scripts/mock_model_server.py"),
+            [sys.executable, "-u", str(ROOT / "Scripts/mock_model_server.py"),
              "--port", "0", "--log", str(Path(directory) / "requests.jsonl")],
             cwd=ROOT, stdout=subprocess.PIPE, text=True,
         )
@@ -29,8 +30,13 @@ def main() -> int:
             with selectors.DefaultSelector() as selector:
                 selector.register(server.stdout, selectors.EVENT_READ)
                 if not selector.select(timeout=10):
-                    raise RuntimeError("The loopback fixture did not become ready within 10 seconds")
-            ready = json.loads(server.stdout.readline())
+                    status = server.poll()
+                    state = "still running" if status is None else f"exited with status {status}"
+                    raise RuntimeError(f"The loopback fixture did not become ready within 10 seconds ({state})")
+            line = server.stdout.readline()
+            if not line:
+                raise RuntimeError(f"The loopback fixture exited before reporting readiness (status {server.poll()})")
+            ready = json.loads(line)
             if ready.get("ready") is not True:
                 raise RuntimeError("The loopback fixture did not report readiness")
             environment = dict(os.environ, COPILOT_STREAM_TEST_URL=ready["base_url"])
